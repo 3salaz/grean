@@ -24,7 +24,8 @@ function ContactForm() {
       );
   };
   return (
-    <form ref={form} onSubmit={sendEmail} className="flex flex-col gap-2 text-mGreen">
+    
+    <form ref={form} onSubmit={sendEmail} className="flex flex-col p-4 gap-2 text-mGreen">
       <label>Name</label>
       <input
         type="text"

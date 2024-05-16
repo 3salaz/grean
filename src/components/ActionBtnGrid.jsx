@@ -6,11 +6,21 @@ import menuLunch1 from "../assets/marcellas_menu_2023-1.png";
 import menuLunch2 from "../assets/marcellas_menu_2023-2.png";
 import menuCatering1 from "../assets/catering-menu-1.png";
 import menuCatering2 from "../assets/catering-menu-2.png";
+import Lightbox from "./Lightbox";
 
 function ActionBtnGrid() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [menuType, setMenuType] = useState("lunch"); // 'lunch' or 'catering'
   const carouselRef = useRef(null);
+  const [lightboxImage, setLightboxImage] = useState(null);
+
+  const openLightbox = (imageSrc) => {
+    setLightboxImage(imageSrc);
+  };
+
+  const closeLightbox = () => {
+    setLightboxImage(null);
+  };
 
   // scroll
   const scrollLeft = () => {
@@ -90,9 +100,9 @@ function ActionBtnGrid() {
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <div className="flex flex-col gap-2 items-center justify-center">
           <h1 className="text-xl font-bold py-4">
-            {menuType === "lunch" ? "Lunch" : "Catering" } Menu
+            {menuType === "lunch" ? "Lunch" : "Catering"} Menu
           </h1>
-          
+
           {menuType === "lunch" ? (
             <div
               className="flex items-center rounded-lg justify-start gap-4 overflow-auto snap-x snap-mandatory hide-scroll overscroll-none w-full h-[55vh] aspect-[3/4] bg-mGreen drop-shadow-2xl"
@@ -100,37 +110,42 @@ function ActionBtnGrid() {
             >
               <div className="rounded-md text-white snap-center h-full drop-shadow-xl aspect-[3/4] bg-mGReen">
                 <img
-                  className="h-full object-fit"
+                  className="h-full object-fit cursor-pointer"
                   src={menuLunch1}
                   alt="lunch menu 1"
-                ></img>
+                  onClick={() => openLightbox(menuLunch1)}
+                />
               </div>
               <div className="bg-mGreen text-white snap-center h-full drop-shadow-xl aspect-[3/4]">
                 <img
-                  className="h-full object-fit"
+                  className="h-full object-fit cursor-pointer"
                   src={menuLunch2}
                   alt="lunch menu 2"
-                ></img>
+                  onClick={() => openLightbox(menuLunch2)}
+                />
               </div>
             </div>
           ) : (
             <div className="flex items-center rounded-lg justify-start gap-4 overflow-auto snap-x snap-mandatory hide-scroll overscroll-none w-full h-[55vh] aspect-[3/4] bg-mGreen" ref={carouselRef}>
               <div className="rounded-md text-white snap-center h-full aspect-[3/4]">
                 <img
-                  className="h-full object-fit"
+                  className="h-full object-fit cursor-pointer"
                   src={menuCatering1}
                   alt="Catering Menu"
-                ></img>
+                  onClick={() => openLightbox(menuCatering1)}
+                />
               </div>
               <div className="bg-mGreen text-white snap-center h-full drop-shadow-xl aspect-[3/4]">
                 <img
-                  className="h-full object-fit"
+                  className="h-full object-fit cursor-pointer"
                   src={menuCatering2}
                   alt="Catering Menu"
-                ></img>
+                  onClick={() => openLightbox(menuCatering2)}
+                />
               </div>
             </div>
           )}
+
           <div className="flex item-center justify-end gap-2 w-full">
             <button onClick={scrollLeft} aria-label="Scroll left" className="bg-white text-mGreen rounded-full p-2 aspect-square flex items-center justify-center border-mGreen border-1 border">
               <ion-icon name="chevron-back-outline"></ion-icon>
@@ -148,13 +163,15 @@ function ActionBtnGrid() {
                 // Set state first and then reset scroll position
                 resetScroll(); // Call this after updating the menu type
                 return newMenuType;
-              })
+              });
             }}
           >
-            Switch to {menuType === "lunch" ? "Catering" : "Lunch"  } Menu
+            Switch to {menuType === "lunch" ? "Catering" : "Lunch"} Menu
           </button>
         </div>
       </Modal>
+
+      {lightboxImage && <Lightbox src={lightboxImage} alt="Enlarged Menu" onClose={closeLightbox} />}
     </section>
   );
 }

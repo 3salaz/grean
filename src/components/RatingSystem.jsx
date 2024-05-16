@@ -2,15 +2,16 @@ import React, { useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { db } from "../firebase.config";
 import { collection, addDoc } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
+import { useAuth } from "../context/AuthContext"; // Import the useAuth hook
 
 const RatingSystem = ({ itemId }) => {
   const [rating, setRating] = useState(null);
   const [hover, setHover] = useState(null);
-  const auth = getAuth();
-  const user = auth.currentUser;
+  const { currentUser } = useAuth(); // Use the useAuth hook to get the current user
+
+  console.log("itemId:", itemId); // Log the itemId to check if it's correctly passed
 
   const handleRatingSubmit = async () => {
     if (!rating) {
@@ -18,9 +19,19 @@ const RatingSystem = ({ itemId }) => {
       return;
     }
 
+    if (!currentUser) {
+      toast.error("You must be logged in to submit a rating.");
+      return;
+    }
+
+    if (!itemId) {
+      toast.error("Invalid item. Please try again.");
+      return;
+    }
+
     try {
       const ratingData = {
-        userId: user.uid,
+        userId: currentUser.uid,
         itemId: itemId,
         rating: rating,
         timestamp: new Date(),
@@ -28,6 +39,8 @@ const RatingSystem = ({ itemId }) => {
 
       await addDoc(collection(db, "ratings"), ratingData);
       toast.success("Rating submitted successfully!");
+      setRating(null); // Reset rating after submission
+      setHover(null);  // Reset hover state after submission
     } catch (error) {
       console.error("Error submitting rating: ", error);
       toast.error("Failed to submit rating: " + error.message);
