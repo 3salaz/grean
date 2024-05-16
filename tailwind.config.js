@@ -4,8 +4,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'mGreen': '#119C6F',
-        'mRed': '#F00925'
+        'mGreen': '#006A32',
+        'mRed': '#F00925',
+        'mYellow': '#FCD12A'
       }
     },
   },

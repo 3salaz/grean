@@ -14,6 +14,14 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
+.hide-scroll{
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+.hide-scroll::-webkit-scrollbar{
+  display: none;  /* Safari and Chrome */
+}
+
 .ig-gradient {
   background-image: linear-gradient(to bottom, #4f5bd5, #962fbf, #d62976, #feda75, #fa7e1e);
 }

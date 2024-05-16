@@ -1,24 +1,32 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 // Routes
-import HomePage from "./Pages/HomePage";
-import MenuPage from "./Pages/MenuPage";
-import AboutPage from "./Pages/AboutPage";
-import ContactPage from "./Pages/ContactPage";
-
+import HomePage from "./pages/HomePage";
 // Components
-import Navbar from "./Components/Navbar";
+import Navbar from "./components/Navigation/Navbar";
+import LoginComponent from "./components/Auth/LoginComponent";
+import ProtectedRoute from "./components/ProtectedRoute";
+import AdminPage from "./pages/AdminPage";
+import { MenuProvider } from "./context/MenuContext";
 
 function App() {
   return (
-    <div className="h-[100svh] bg-white">
+    <div className="h-[100svh] bg-white relative">
       <Router>
-        <Navbar/>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/menu" element={<MenuPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-        </Routes>
+        <Navbar />
+        <MenuProvider>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginComponent />} />
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <AdminPage />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </MenuProvider>
       </Router>
     </div>
   );
