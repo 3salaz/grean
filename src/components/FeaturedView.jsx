@@ -239,14 +239,9 @@ import React, { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useMenu } from "../context/MenuContext";
 import ViewsHeader from "./ViewsHeader";
-import Modal from "./UI/Modal";
-import RatingSystem from "./RatingSystem";
 
 function FeaturedView() {
   const containerRef = useRef(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
   const [currentView, setCurrentView] = useState(0);
   const [currentCategory, setCurrentCategory] = useState("Lasagna"); // Ensure initial category matches the database
   const { menu, loading, error } = useMenu();
@@ -280,8 +275,8 @@ function FeaturedView() {
     <main className="h-full snap-center">
       <section className="h-full flex flex-col justify-between relative">
         <ViewsHeader viewName="Featured" />
-        <div className="w-full h-full flex flex-col justify-between items-center relative">
-          <div className="w-full box-border flex flex-col items-center justify-center min-h-[85%] gap-6 relative">
+        <div className="w-full h-[90%] flex flex-col justify-between items-center relative">
+          <div className="w-full box-border flex flex-col items-center justify-center gap-6 relative">
             <div
               className="flex items-center justify-start gap-3 overflow-auto snap-x snap-mandatory w-full hide-scroll h-full px-2"
               ref={containerRef}
