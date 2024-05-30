@@ -20,4 +20,4 @@ const Lightbox = ({ src, alt, onClose }) => {
   );
 };
 
-export default Lightbox;
+export default Lightbox

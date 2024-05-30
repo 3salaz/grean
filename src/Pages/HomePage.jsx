@@ -1,21 +1,20 @@
 import React from "react";
-import FeaturedView from "../components/FeaturedView";
-import FooterView from "../components/FooterView";
-import LandingView from "../components/LandingView";
-import SocialView from "../components/SocialView";
-import ContactView from "../components/ContactView";
+import Featured from "../components/Views/Featured";
+import Footer from "../components/Views/Footer";
+import Welcome from "../components/Views/Welcome";
+import Social from "../components/Views/Social";
+import Contact from "../components/Views/Contact";
+import ViewWrapper from "../components/Views/ViewWrapper";
 
 function HomePage() {
   return (
-    <main className="h-[92svh] overflow-auto snap-y snap-mandatory hide-scroll overscroll-none w-full">
-      <section className="h-full container w-full mx-auto">
-        <LandingView />
-        <FeaturedView />
-        <SocialView />
-        <ContactView />
-        <FooterView />
-      </section>
-    </main>
+    <div className="h-full w-full snap-y snap-mandatory overflow-y-scroll">
+      <ViewWrapper header={false} main={<Welcome />}  />
+      <ViewWrapper header={true} main={<Featured />} viewName="Featured" />
+      <ViewWrapper header={true} main={<Social />} viewName="Social" />
+      <ViewWrapper header={true} main={<Contact />} viewName="Contact" />
+      <ViewWrapper header={false} main={<Footer />} />
+    </div>
   );
 }
 

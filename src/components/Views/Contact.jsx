@@ -1,7 +1,7 @@
-import ContactForm from "./ContactForm";
+import ContactForm from "../ContactForm";
 import ViewsHeader from "./ViewsHeader";
 
-function ContactView() {
+function Contact() {
   return (
     <div className="h-full snap-center">
       <div className="h-full w-full overscroll-none">
@@ -39,4 +39,4 @@ function ContactView() {
   );
 }
 
-export default ContactView;
+export default Contact;

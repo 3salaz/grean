@@ -1,6 +1,6 @@
 import React from "react";
-import Logo from "../assets/Logo-Transparent.png";
-import marcellasVideo from "../assets/footer.MP4";
+import Logo from "../../assets/Logo-Transparent.png";
+import marcellasVideo from "../../assets/footer.MP4";
 
 function Footer() {
   return (

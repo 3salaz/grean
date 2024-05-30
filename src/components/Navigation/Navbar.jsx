@@ -6,7 +6,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
-    <header className="sticky h-[8svh] z-20">
+    <header className="sticky h-[8%] z-20">
       {/* Main Navigation Bar */}
       <nav className="bg-mGreen h-full text-white py-2 px-4 top-0 w-full z-30 drop-shadow-2xl flex items-center justify-center">
         <div className="container mx-auto flex justify-between items-center">
