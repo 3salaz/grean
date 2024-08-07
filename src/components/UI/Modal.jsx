@@ -12,7 +12,7 @@ const Modal = ({ isOpen, children, onClose }) => {
           onClick={onClose}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          className="absolute bottom-5 right-5 cursor-pointer rounded-full bg-mRed text-white aspect-square"
+          className="absolute bottom-5 right-5 cursor-pointer rounded-full bg-mRed text-white aspect-square flex items-center justify-center"
         >
           <ion-icon size="large" name="close-circle-outline"></ion-icon>
         </motion.button>

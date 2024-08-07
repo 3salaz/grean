@@ -35,3 +35,33 @@ code {
   background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f09433', endColorstr='#bc1888',GradientType=1 );
 }
+
+/* Animations */
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-30px);
+  }
+  60% {
+    transform: translateY(-15px);
+  }
+}
+
+.ball-bounce {
+  animation: bounce 2s infinite;
+}
+
+.ball-bounce:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.ball-bounce:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.ball-bounce:nth-child(3) {
+  animation-delay: 0.4s;
+}
+

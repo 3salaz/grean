@@ -1,13 +1,13 @@
 import React from 'react';
 import ViewsHeader from './ViewsHeader';
 
-function ViewWrapper({ header, main, viewName }) {
+function ViewWrapper({ header, main, viewName, footer }) {
   return (
-    <div className="h-full w-full flex flex-col items-center justify snap-center p-2 gap-2">
+    <div className="h-full w-full flex flex-col items-center justify snap-center gap-2">
       {header && (
         <ViewsHeader viewName={viewName} />
       )}
-      <section className={`w-full flex flex-col items-center justify-center ${header ? 'h-full' : 'bg-white h-[90%]'}`}>
+      <section className={`w-full h-full flex flex-col items-center justify-center ${header ? 'h-full' : 'h-[92%]'}`}>
         {main}
       </section>
     </div>

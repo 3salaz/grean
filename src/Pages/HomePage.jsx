@@ -8,12 +8,12 @@ import ViewWrapper from "../components/Views/ViewWrapper";
 
 function HomePage() {
   return (
-    <div className="h-full w-full snap-y snap-mandatory overflow-y-scroll">
+    <div id="homepage" className="h-full w-full snap-y snap-mandatory overflow-y-scroll">
       <ViewWrapper header={false} main={<Welcome />}  />
-      <ViewWrapper header={true} main={<Featured />} viewName="Featured" />
+      {/* <ViewWrapper header={true} main={<Featured />} viewName="Featured" /> */}
       <ViewWrapper header={true} main={<Social />} viewName="Social" />
       <ViewWrapper header={true} main={<Contact />} viewName="Contact" />
-      <ViewWrapper header={false} main={<Footer />} />
+      <ViewWrapper header={false} footer={true} main={<Footer />} />
     </div>
   );
 }

@@ -1,16 +1,16 @@
-import React, { useRef, useState } from "react";
-// import MenuModal from "./MenuModal";
-import { motion } from "framer-motion";
-import Modal from "./UI/Modal";
-import menuLunch1 from "../assets/marcellas_menu_2023-1.png";
-import menuLunch2 from "../assets/marcellas_menu_2023-2.png";
-import menuCatering1 from "../assets/catering-menu-1.png";
-import menuCatering2 from "../assets/catering-menu-2.png";
-import Lightbox from "./Lightbox";
+import React, { useRef, useState } from 'react';
+import { motion } from 'framer-motion';
+import Modal from './UI/Modal';
+import menuLunch1 from '../assets/marcellas_menu_2023-1.png';
+import menuLunch2 from '../assets/marcellas_menu_2023-2.png';
+import menuCatering1 from '../assets/catering-menu-1.png';
+import menuCatering2 from '../assets/catering-menu-2.png';
+import Lightbox from './Lightbox';
+import Button from './UI/Button';
 
 function ActionBtnGrid() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [menuType, setMenuType] = useState("lunch"); // 'lunch' or 'catering'
+  const [menuType, setMenuType] = useState('lunch');
   const carouselRef = useRef(null);
   const [lightboxImage, setLightboxImage] = useState(null);
 
@@ -22,38 +22,37 @@ function ActionBtnGrid() {
     setLightboxImage(null);
   };
 
-  // scroll
   const scrollLeft = () => {
-    carouselRef.current.scrollBy({ left: -300, behavior: "smooth" }); // Adjust the pixel amount as needed
+    carouselRef.current.scrollBy({ left: -300, behavior: 'smooth' });
   };
 
   const scrollRight = () => {
-    carouselRef.current.scrollBy({ left: 300, behavior: "smooth" }); // Adjust the pixel amount as needed
+    carouselRef.current.scrollBy({ left: 300, behavior: 'smooth' });
   };
-  
+
   const resetScroll = () => {
     if (carouselRef.current) {
-      carouselRef.current.scrollLeft = 0; // Reset scroll position to the start
+      carouselRef.current.scrollLeft = 0;
     }
   };
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+
   return (
     <section className="container mx-auto grid grid-rows-5 grid-cols-5 grid-flow-col h-32 px-4">
       {/* Call */}
-      <a
-        href="tel:+14159202225"
-        className="flex items-center justify-start col-span-2 row-span-5 p-4"
-      >
-        <motion.button
-          className="flex items-center justify-center aspect-square bg-mRed rounded-full h-[80%] shadow-md  text-white"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <ion-icon size="large" name="call-outline"></ion-icon>
-        </motion.button>
-      </a>
+      <div className="flex items-center justify-start col-span-2 row-span-5 p-4">
+        <Button
+          color="danger"
+          size="large"
+          roundness="full"
+          className='aspect-square'
+          withIcon={<ion-icon name="call-outline" size="large"></ion-icon>}
+          iconPosition="left"
+          link="tel:+14159202225"
+        />
+      </div>
 
       {/* Social Links */}
       <div className="flex items-center justify-center gap-2 col-span-3 row-span-2 p-1">
@@ -100,15 +99,15 @@ function ActionBtnGrid() {
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <div className="flex flex-col gap-2 items-center justify-center">
           <h1 className="text-xl font-bold py-4">
-            {menuType === "lunch" ? "Lunch" : "Catering"} Menu
+            {menuType === 'lunch' ? 'Lunch' : 'Catering'} Menu
           </h1>
 
-          {menuType === "lunch" ? (
+          {menuType === 'lunch' ? (
             <div
               className="flex items-center rounded-lg justify-start gap-4 overflow-auto snap-x snap-mandatory hide-scroll overscroll-none w-full h-[55vh] aspect-[3/4] bg-mGreen drop-shadow-2xl"
               ref={carouselRef}
             >
-              <div className="rounded-md text-white snap-center h-full drop-shadow-xl aspect-[3/4] bg-mGReen">
+              <div className="rounded-md text-white snap-center h-full drop-shadow-xl aspect-[3/4] bg-mGreen">
                 <img
                   className="h-full object-fit cursor-pointer"
                   src={menuLunch1}
@@ -126,7 +125,10 @@ function ActionBtnGrid() {
               </div>
             </div>
           ) : (
-            <div className="flex items-center rounded-lg justify-start gap-4 overflow-auto snap-x snap-mandatory hide-scroll overscroll-none w-full h-[55vh] aspect-[3/4] bg-mGreen" ref={carouselRef}>
+            <div
+              className="flex items-center rounded-lg justify-start gap-4 overflow-auto snap-x snap-mandatory hide-scroll overscroll-none w-full h-[55vh] aspect-[3/4] bg-mGreen"
+              ref={carouselRef}
+            >
               <div className="rounded-md text-white snap-center h-full aspect-[3/4]">
                 <img
                   className="h-full object-fit cursor-pointer"
@@ -147,10 +149,18 @@ function ActionBtnGrid() {
           )}
 
           <div className="flex item-center justify-end gap-2 w-full">
-            <button onClick={scrollLeft} aria-label="Scroll left" className="bg-white text-mGreen rounded-full p-2 aspect-square flex items-center justify-center border-mGreen border-1 border">
+            <button
+              onClick={scrollLeft}
+              aria-label="Scroll left"
+              className="bg-white text-mGreen rounded-full p-2 aspect-square flex items-center justify-center border-mGreen border-1 border"
+            >
               <ion-icon name="chevron-back-outline"></ion-icon>
             </button>
-            <button onClick={scrollRight} aria-label="Scroll right" className="bg-white text-mGreen rounded-full p-2 aspect-square flex items-center justify-center border-mGreen border-1 border">
+            <button
+              onClick={scrollRight}
+              aria-label="Scroll right"
+              className="bg-white text-mGreen rounded-full p-2 aspect-square flex items-center justify-center border-mGreen border-1 border"
+            >
               <ion-icon name="chevron-forward-outline"></ion-icon>
             </button>
           </div>
@@ -158,20 +168,27 @@ function ActionBtnGrid() {
           <button
             className="border-1 border-white border bg-mGreen text-white px-3 py-2 rounded-md"
             onClick={() => {
-              setMenuType(prevMenuType => {
-                const newMenuType = prevMenuType === "lunch" ? "catering" : "lunch";
+              setMenuType((prevMenuType) => {
+                const newMenuType =
+                  prevMenuType === 'lunch' ? 'catering' : 'lunch';
                 // Set state first and then reset scroll position
                 resetScroll(); // Call this after updating the menu type
                 return newMenuType;
               });
             }}
           >
-            Switch to {menuType === "lunch" ? "Catering" : "Lunch"} Menu
+            Switch to {menuType === 'lunch' ? 'Catering' : 'Lunch'} Menu
           </button>
         </div>
       </Modal>
 
-      {lightboxImage && <Lightbox src={lightboxImage} alt="Enlarged Menu" onClose={closeLightbox} />}
+      {lightboxImage && (
+        <Lightbox
+          src={lightboxImage}
+          alt="Enlarged Menu"
+          onClose={closeLightbox}
+        />
+      )}
     </section>
   );
 }

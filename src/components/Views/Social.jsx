@@ -5,8 +5,8 @@ import IG from "../../assets/Screenshot 2024-05-14 at 12.47.32 PM.png";
 
 function Social() {
   return (
-    <div className="h-full w-full flex flex-col items-center justify-start snap-center">
-      <div className="h-full w-full flex flex-col md:flex-row justify-between items-center px-2">
+    <div className="h-full w-full flex flex-col items-center justify-center px-2 container">
+      <div className="h-full md:h-[70%] w-full flex flex-col md:flex-row justify-between items-centers">
         <motion.a
           href="https://www.instagram.com/marcellaslasagneriasf/?hl=en"
           className="flex items-center justify-center w-full basis-1/2 bg-white rounded-lg drop-shadow-2xl"

@@ -1,12 +1,14 @@
 import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useMenu } from "../../context/MenuContext";
+import { ClipLoader } from "react-spinners"; // Import the spinner
 
 function Featured() {
   const containerRef = useRef(null);
   const [currentView, setCurrentView] = useState(0);
   const [currentCategory, setCurrentCategory] = useState("Lasagna");
   const { menu, loading, error } = useMenu();
+  const [imageLoaded, setImageLoaded] = useState({});
 
   const scrollToSection = (index) => {
     setCurrentView(index);
@@ -18,6 +20,10 @@ function Featured() {
     setCurrentCategory(category);
     setCurrentView(0);
     containerRef.current.scrollTo({ left: 0, behavior: "smooth" });
+  };
+
+  const handleImageLoad = (index) => {
+    setImageLoaded((prevState) => ({ ...prevState, [index]: true }));
   };
 
   const filteredMenuItems = menu.filter(
@@ -33,80 +39,82 @@ function Featured() {
   }
 
   return (
-    <div className="w-full h-full flex flex-col justify-between items-center relative">
-      <div className="w-full h-[90%] flex flex-col items-center justify-center gap-6 relative overflow-hidden">
+    <div className="w-full h-full flex flex-col justify-center items-center relative container p-4 gap-6">
+      <div className="w-full flex flex-col items-center justify-center relative overflow-hidden">
         <div
-          className="flex items-center justify-start gap-3 overflow-x-auto snap-x snap-mandatory w-full hide-scroll h-full"
+          className="flex items-center justify-start overflow-x-auto snap-x snap-mandatory w-full hide-scroll"
           ref={containerRef}
         >
           {filteredMenuItems.map((item, index) => (
             <section
               key={item.id}
-              className="flex-none items-center my-auto w-[75%] md:w-1/2 bg-mYellow lg:w-1/5 snap-center hide-scroll box-border drop-shadow-lg px-2 gap-2"
+              className="flex-none items-center my-auto w-[85%] md:w-[50%] h-full lg:w-1/4 snap-center hide-scroll box-border p-2"
             >
-              <div className="flex items-center justify-center gap-2 h-full w-full">
-                <div className="basis-4/6 w-full h-full flex items-center justify-center aspect-[3/4]">
-                  <img
-                    className="object-cover h-full rounded-lg shadow-4xl"
-                    src={item.imageUrls[0] || "default-image-url"}
-                    alt={item.name}
-                  />
-                </div>
-                <div className="flex flex-col items-center justify-center basis-2/6 gap-1 aspect-square h-full py-2">
-                  <div className="h-full shadow-4xl w-full items-center justify-center flex">
+              <div className="h-full flex flex-col gap-4 justify-between drop-shadow-lg bg-white">
+                <div className="grid grid-cols-4 gap-2 w-full p-2 bg-mYellow">
+                  <div className="col-span-3 h-full flex items-center justify-center">
+                    {!imageLoaded[index] && (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <ClipLoader color={"#09f"} loading={!imageLoaded[index]} size={36} />
+                      </div>
+                    )}
                     <img
-                      className="aspect-square object-cover h-full rounded-lg shadow-4xl"
-                      src={
-                        item.imageUrls[1] ||
-                        item.imageUrls[0] ||
-                        "default-image-url"
-                      }
+                      className={`object-cover h-full w-full rounded-lg ${
+                        !imageLoaded[index] ? "hidden" : ""
+                      }`}
+                      src={item.imageUrls[0] || "default-image-url"}
                       alt={item.name}
+                      onLoad={() => handleImageLoad(index)}
                     />
                   </div>
-                  <div className="h-full shadow-4xl w-full items-center justify-center flex">
-                    <img
-                      className="aspect-square h-full object-cover rounded-lg shadow-4xl"
-                      src={
-                        item.imageUrls[2] ||
-                        item.imageUrls[0] ||
-                        "default-image-url"
-                      }
-                      alt={item.name}
-                    />
+                  <div className="col-span-1 grid grid-rows-3 gap-2 h-full">
+                    {Array(3)
+                      .fill(0)
+                      .map((_, i) => (
+                        <div
+                          key={i}
+                          className="row-span-1 h-full flex items-center justify-center"
+                        >
+                          {!imageLoaded[`${index}-${i}`] && (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <ClipLoader color={"#09f"} loading={!imageLoaded[`${index}-${i}`]} size={36} />
+                            </div>
+                          )}
+                          <img
+                            className={`aspect-square object-cover h-full w-full rounded-lg shadow-4xl ${
+                              !imageLoaded[`${index}-${i}`] ? "hidden" : ""
+                            }`}
+                            src={
+                              item.imageUrls[i + 1] ||
+                              item.imageUrls[0] ||
+                              "default-image-url"
+                            }
+                            alt={item.name}
+                            onLoad={() => handleImageLoad(`${index}-${i}`)}
+                          />
+                        </div>
+                      ))}
                   </div>
-                  <div className="h-full shadow-4xl w-full items-center justify-center flex">
-                    <img
-                      className="aspect-square object-cover h-full rounded-lg shadow-4xl"
-                      src={
-                        item.imageUrls[3] ||
-                        item.imageUrls[0] ||
-                        "default-image-url"
-                      }
-                      alt={item.name}
-                    />
+                </div>
+                <div>
+                  <div className="text-xl px-2 line-clamp-1 font-bold text-mRed">
+                    {item.name}
+                  </div>
+                  <div className="text-sm px-2 leading-7 h-24 overflow-hidden text-ellipsis">
+                    {item.description}
                   </div>
                 </div>
-              </div>
-              <div className="p-3 text-left bg-white rounded-lg w-full h-full flex flex-col gap-1 justify-center">
-                <div className="text-xl line-clamp-1 font-bold text-mRed">
-                  {item.name}
-                </div>
-                <div className="text-sm px-1 line-clamp-4 leading-7 min-h-32">
-                  {item.description}
-                </div>
-              </div>
-              <div className="flex flex-wrap items-center justify-between w-full py-2">
-                <div className="basis-full rounded-sm">
+
+                <div className="rounded-b-md bg-mGreen p-2">
                   {item ? (
                     item.dietaryIcons.includes("vegetarian") ||
                     item.dietaryIcons.includes("special") ||
                     item.dietaryIcons.includes("topRated") ||
                     item.dietaryIcons.includes("g'sFavorite") ? (
                       <div className="flex items-center justify-center">
-                        <ul className="p-2 flex gap-2 bg-mGreen rounded-md">
+                        <ul className="p-1 flex gap-2 rounded-md">
                           {item.dietaryIcons.includes("vegetarian") && (
-                            <li className="text-mGreen bg-white rounded-full aspect-square w-8 flex items-center justify-center">
+                            <li className="text-mGreen border-2 border-mYellow bg-white rounded-full aspect-square w-8 flex items-center justify-center">
                               <ion-icon name="leaf-outline"></ion-icon>
                             </li>
                           )}
@@ -116,7 +124,7 @@ function Featured() {
                             </li>
                           )}
                           {item.dietaryIcons.includes("topRated") && (
-                            <li className="text-mGreen bg-white rounded-full aspect-square w-8 flex items-center justify-center">
+                            <li className="text-mYellow bg-white rounded-full aspect-square w-8 flex items-center justify-center">
                               <ion-icon name="star-outline"></ion-icon>
                             </li>
                           )}
@@ -138,23 +146,22 @@ function Featured() {
             </section>
           ))}
         </div>
-
-        <div className="flex justify-center items-center gap-3 bg-white w-full">
-          {filteredMenuItems.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => scrollToSection(index)}
-              className={`w-4 h-4 rounded-full ${
-                index === currentView ? "bg-mGreen" : "bg-gray-300"
-              }`}
-              aria-label={`Go to section ${index + 1}`}
-            ></button>
-          ))}
-        </div>
-
       </div>
 
-      <div className="flex container mx-auto items-center justify-center gap-4 h-[10%] bg-white px-6">
+      <div className="flex justify-center items-center gap-2 w-full">
+        {filteredMenuItems.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => scrollToSection(index)}
+            className={`w-4 h-4 rounded-full ${
+              index === currentView ? "bg-mGreen" : "bg-gray-300"
+            }`}
+            aria-label={`Go to section ${index + 1}`}
+          ></button>
+        ))}
+      </div>
+
+      <div className="flex container mx-auto items-center justify-center gap-4 px-6">
         <motion.button
           className="rounded-md bg-mRed text-white px-3 py-2 basis-1/3"
           onClick={() => handleCategoryChange("Lasagna")}
@@ -185,3 +192,4 @@ function Featured() {
 }
 
 export default Featured;
+

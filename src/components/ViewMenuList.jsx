@@ -1,15 +1,12 @@
 import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useMenu } from "../context/MenuContext";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { storage } from "../firebase.config";
-import { toast } from "react-toastify";
 
 function ViewMenuList() {
   const containerRef = useRef(null);
   const [currentCategory, setCurrentCategory] = useState("lasagnas");
   const [currentView, setCurrentView] = useState(0);
-  const { menu, loading, editMenuItem, error, deleteItem, editItem } =
+  const { menu, loading, editMenuItem, error, deleteItem } =
     useMenu();
   const [editingItem, setEditingItem] = useState(null);
   const [editFormData, setEditFormData] = useState({
@@ -26,6 +23,9 @@ function ViewMenuList() {
     setCurrentView(0); // Resetting current view
     containerRef.current.scrollTo({ left: 0, behavior: "smooth" });
   };
+
+  console.log(currentView);
+
 
   const handleEditClick = (item) => {
     setEditingItem(item.id);
