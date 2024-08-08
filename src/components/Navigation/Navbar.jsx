@@ -9,7 +9,7 @@ const Navbar = () => {
     <header className="sticky h-[8%] z-20">
       {/* Main Navigation Bar */}
       <nav className="bg-mGreen h-full text-white py-2 px-4 top-0 w-full z-30 drop-shadow-2xl flex items-center justify-center">
-        <div className="container mx-auto flex justify-between items-center">
+        <div className="container mx-auto flex justify-center items-center">
           <div className="text-lg font-bold">
             <a href="/" className="hover:text-gray-300">
               <img
@@ -19,15 +19,15 @@ const Navbar = () => {
               />
             </a>
           </div>
-          <button
+          {/* <button
             onClick={() => setIsOpen(!isOpen)}
             className="text-mRed bg-white rounded-full aspect-square h-10 p-1 drop-shadow-xl md:hidden"
           >
             <ion-icon name="menu-outline" size="large"></ion-icon>
-          </button>
+          </button> */}
 
           {/* Desktop Menu */}
-          <ul className="hidden md:flex space-x-4">
+          {/* <ul className="hidden md:flex space-x-4">
             <li>
               <Link to="/" className="hover:text-gray-300">
                 Home
@@ -48,7 +48,7 @@ const Navbar = () => {
                 Contact
               </Link>
             </li>
-          </ul>
+          </ul> */}
         </div>
       </nav>
 
@@ -61,7 +61,7 @@ const Navbar = () => {
       )}
 
       {/* Side Menu for Mobile */}
-      <nav
+      {/* <nav
         className={`fixed top-0 ${
           isOpen ? "left-0" : "-left-full"
         } h-screen bg-white border-mGreen border-2 w-64 transition-all duration-300 md:hidden z-50 drop-shadow-3xl rounded-r-lg`}
@@ -104,7 +104,7 @@ const Navbar = () => {
             </Link>
           </li>
         </ul>
-      </nav>
+      </nav> */}
     </header>
   );
 };

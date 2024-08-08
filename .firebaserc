@@ -5,8 +5,8 @@
   "targets": {
     "marcellas": {
       "hosting": {
-        "testing": [
-          "marcellas-lasagneria"
+        "production": [
+          "marcellas"
         ]
       }
     }
