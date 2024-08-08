@@ -33,10 +33,10 @@ function Contact() {
     <section className="w-full h-full flex items-center justify-center bg-mYellow px-4">
       <ToastContainer />
       <div className="container max-w-2xl mx-auto">
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <div className="text-center mb-4">
+        <div className="bg-white rounded-lg shadow-lg px-6 py-2">
+          <div className="text-center mb-2">
             <h2 className="text-2xl font-bold text-mGreen">Send Us A Message!</h2>
-            <p className="text-xs text-gray-700 mt-2">
+            <p className="text-xs text-gray-700 mt-1">
               Bringing a large group? Looking to collab on our social media?
               Maybe you just want to send some love to the crew! Whatever it is,
               just send us a message and we'll get back to you as soon as we
@@ -44,7 +44,7 @@ function Contact() {
             </p>
           </div>
 
-          <form ref={form} onSubmit={sendEmail} className="flex flex-col gap-4 text-mGreen">
+          <form ref={form} onSubmit={sendEmail} className="flex flex-col gap-2 text-mGreen">
             <div className="flex flex-col">
               <label className="mb-1">Name</label>
               <input
@@ -91,6 +91,7 @@ function Contact() {
               />
             </div>
           </form>
+
         </div>
       </div>
     </section>
