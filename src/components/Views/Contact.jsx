@@ -1,5 +1,7 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import emailjs from "@emailjs/browser";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 function Contact() {
   const form = useRef();
@@ -9,23 +11,27 @@ function Contact() {
 
     emailjs
       .sendForm(
-        "service_d6aj2lw",
-        "template_lmnmfvs",
+        "service_marcellas",
+        "template_4y4xx4h",
         form.current,
-        "tx3Q3atJsYPq2xTPe"
+        "OXVmMrXHHOEpr832j"
       )
       .then(
         (result) => {
           console.log(result.text);
+          form.current.reset(); // Reset the form fields
+          toast.success("Your message has been sent successfully!"); // Show success toast notification
         },
         (error) => {
           console.log(error.text);
+          toast.error("There was an error sending your message. Please try again."); // Show error toast notification
         }
       );
   };
 
   return (
     <section className="w-full h-full flex items-center justify-center bg-mYellow px-4">
+      <ToastContainer />
       <div className="container max-w-2xl mx-auto">
         <div className="bg-white rounded-lg shadow-lg p-6">
           <div className="text-center mb-4">
@@ -45,6 +51,7 @@ function Contact() {
                 type="text"
                 name="user_name"
                 className="rounded-md border border-mGreen focus:ring-mGreen focus:border-mGreen p-2"
+                required
               />
             </div>
             <div className="flex flex-col">
@@ -53,6 +60,7 @@ function Contact() {
                 type="email"
                 name="user_email"
                 className="rounded-md border border-mGreen focus:ring-mGreen focus:border-mGreen p-2"
+                required
               />
             </div>
             <div className="flex flex-col">
@@ -61,6 +69,7 @@ function Contact() {
                 type="text"
                 name="subject"
                 className="rounded-md border border-mGreen focus:ring-mGreen focus:border-mGreen p-2"
+                required
               />
             </div>
             <div className="flex flex-col">
@@ -71,6 +80,7 @@ function Contact() {
                 rows="4"
                 className="block w-full text-sm text-mGreen bg-gray-50 rounded-lg border border-mGreen focus:ring-mGreen focus:border-mGreen p-2.5"
                 placeholder="Leave a comment..."
+                required
               ></textarea>
             </div>
             <div className="text-center mt-4">
