@@ -28,7 +28,36 @@ function Welcome() {
           </div>
         </div>
 
-        <div className="w-full flex justify-center items-start flex-wrap h-full">
+        <div className="flex items-center justify-center gap-2 col-span-3 row-span-2 p-1">
+        <a
+          href="https://www.facebook.com/marcellaslasagneria/"
+          target="_blank"
+          rel="noreferrer"
+          className="bg-[#4267B2] text-white drop-shadow-xl rounded-md h-[90%] aspect-square flex items-center justify-center"
+        >
+          <ion-icon size="large" name="logo-facebook"></ion-icon>
+        </a>
+
+        <a
+          href="https://www.youtube.com/channel/UCvSzZgB-27Llh-IllTqGL7Q"
+          target="_blank"
+          rel="noreferrer"
+          className="bg-[#FF0000] text-white drop-shadow-xl rounded-md h-[90%] aspect-square flex items-center justify-center p-1"
+        >
+          <ion-icon size="large" name="logo-youtube"></ion-icon>
+        </a>
+
+        <a
+          href="https://www.instagram.com/marcellaslasagneriasf/?hl=en"
+          target="_blank"
+          rel="noreferrer"
+          className="instagram-logo text-white drop-shadow-xl rounded-md h-[90%] aspect-square flex items-center justify-center "
+        >
+          <ion-icon size="large" name="logo-instagram"></ion-icon>
+        </a>
+      </div>
+
+        <div className="w-full flex justify-center items-start pt-40 flex-wrap h-full">
           <div className="font-bold text-3xl drop-shadow-2xl px-2">
             <div className="bg-white rounded-t-md text-black p-2 py-4 flex items-center justify-center flex-wrap gap-2">
               <span className="text-mGreen stroke-2">Best</span>Lasagna In The<span className="text-mRed">City</span>
@@ -37,10 +66,10 @@ function Welcome() {
           </div>
         </div>
       </div>
-      <img className="object-cover h-[88%] w-full rounded-b-3xl" src={lasagna} alt="Lasagna pan" />
-      <div className="absolute bottom-2 w-full rounded-lg px-4 flex flex-col gap-4">
+      <img className="object-cover h-[96%] w-full rounded-b-3xl" src={lasagna} alt="Lasagna pan" />
+      <div className="absolute bottom-2 w-full rounded-lg px-4 flex flex-col">
         <ActionBtnGrid />
-        {/* <BallBounce /> */}
+        <BallBounce />
       </div>
     </div>
   );

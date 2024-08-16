@@ -1,0 +1,23 @@
+.steps-horizontal-layout {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  .custom-step {
+    flex: none;
+    margin-right: 1rem;
+  }
+  
+  .steps-horizontal-layout .ant-steps-item {
+    flex: none;
+    width: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .steps-horizontal-layout .ant-steps-item-title {
+    white-space: nowrap;
+  }

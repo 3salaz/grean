@@ -1,18 +1,20 @@
-import React, { useRef, useState } from 'react';
-import { motion } from 'framer-motion';
-import Modal from './UI/Modal';
-import menuLunch1 from '../assets/marcellas_menu_2023-1.png';
-import menuLunch2 from '../assets/marcellas_menu_2023-2.png';
-import menuCatering1 from '../assets/catering-menu-1.png';
-import menuCatering2 from '../assets/catering-menu-2.png';
-import Lightbox from './Lightbox';
-import Button from './UI/Button';
+import React, { useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import Modal from "./UI/Modal";
+import menuLunch1 from "../assets/marcellas_menu_2023-1.png";
+import menuLunch2 from "../assets/marcellas_menu_2023-2.png";
+import menuCatering1 from "../assets/catering-menu-1.png";
+import menuCatering2 from "../assets/catering-menu-2.png";
+import Lightbox from "./Lightbox";
+import Button from "./UI/Button";
+import { useNavigate } from "react-router-dom";
 
 function ActionBtnGrid() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [menuType, setMenuType] = useState('lunch');
+  const [menuType, setMenuType] = useState("lunch");
   const carouselRef = useRef(null);
   const [lightboxImage, setLightboxImage] = useState(null);
+  const navigate = useNavigate();
 
   const openLightbox = (imageSrc) => {
     setLightboxImage(imageSrc);
@@ -23,11 +25,11 @@ function ActionBtnGrid() {
   };
 
   const scrollLeft = () => {
-    carouselRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+    carouselRef.current.scrollBy({ left: -300, behavior: "smooth" });
   };
 
   const scrollRight = () => {
-    carouselRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+    carouselRef.current.scrollBy({ left: 300, behavior: "smooth" });
   };
 
   const resetScroll = () => {
@@ -42,19 +44,19 @@ function ActionBtnGrid() {
   return (
     <section className="container mx-auto grid grid-rows-5 grid-cols-5 grid-flow-col h-32 px-4">
       {/* Call */}
-      <div className="flex items-center justify-start col-span-2 row-span-5 p-4">
+      <div className="flex items-center justify-center col-span-2 row-span-3">
         <Button
           color="danger"
           size="large"
           roundness="full"
-          className='aspect-square'
+          className="aspect-square border-2 border-white drop-shadow-xl"
           withIcon={<ion-icon name="call-outline" size="large"></ion-icon>}
           iconPosition="left"
           link="tel:+14159202225"
         />
       </div>
 
-      {/* Social Links */}
+      {/* Social Links
       <div className="flex items-center justify-center gap-2 col-span-3 row-span-2 p-1">
         <a
           href="https://www.facebook.com/marcellaslasagneria/"
@@ -82,12 +84,20 @@ function ActionBtnGrid() {
         >
           <ion-icon size="large" name="logo-instagram"></ion-icon>
         </a>
-      </div>
+      </div> */}
 
       {/* Menu Link */}
-      <div className="flex items-center justify-center col-span-3 row-span-2">
+      <div className="flex flex-col gap-2 items-center justify-center col-span-3 row-span-3">
         <motion.button
-          className="bg-mYellow drop-shadow-xl shadow-xl rounded-md w-full h-[80%] font-bold"
+          className="bg-white drop-shadow-xl shadow-xl rounded-md w-full h-[80%] font-bold p-2"
+          onClick={() => navigate("/preorder")}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+        >
+          Preorder
+        </motion.button>
+        <motion.button
+          className="bg-mYellow drop-shadow-xl shadow-xl rounded-md w-full h-[80%] font-bold p-2"
           onClick={openModal}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
@@ -95,14 +105,14 @@ function ActionBtnGrid() {
           Menu
         </motion.button>
       </div>
-
+      <AnimatePresence>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <div className="flex flex-col gap-2 items-center justify-center">
-          <h1 className="text-xl font-bold py-4">
-            {menuType === 'lunch' ? 'Lunch' : 'Catering'} Menu
+          <h1 className="text-3xl font-bold py-4">
+            {menuType === "lunch" ? "Lunch" : "Catering"} Menu
           </h1>
 
-          {menuType === 'lunch' ? (
+          {menuType === "lunch" ? (
             <div
               className="flex items-center rounded-lg justify-start gap-4 overflow-auto snap-x snap-mandatory hide-scroll overscroll-none w-full h-[55vh] aspect-[3/4] bg-mGreen drop-shadow-2xl"
               ref={carouselRef}
@@ -170,17 +180,17 @@ function ActionBtnGrid() {
             onClick={() => {
               setMenuType((prevMenuType) => {
                 const newMenuType =
-                  prevMenuType === 'lunch' ? 'catering' : 'lunch';
-                // Set state first and then reset scroll position
-                resetScroll(); // Call this after updating the menu type
+                  prevMenuType === "lunch" ? "catering" : "lunch";
+                resetScroll();
                 return newMenuType;
               });
             }}
           >
-            Switch to {menuType === 'lunch' ? 'Catering' : 'Lunch'} Menu
+            Switch to {menuType === "lunch" ? "Catering" : "Lunch"} Menu
           </button>
         </div>
       </Modal>
+      </AnimatePresence>
 
       {lightboxImage && (
         <Lightbox

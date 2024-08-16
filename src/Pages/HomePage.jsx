@@ -1,5 +1,5 @@
 import React from "react";
-import Featured from "../components/Views/Featured";
+// import Featured from "../components/Views/Featured";
 import Footer from "../components/Views/Footer";
 import Welcome from "../components/Views/Welcome";
 import Social from "../components/Views/Social";

@@ -13,17 +13,19 @@ import "tailwindcss/tailwind.css";
 import emailjs from "emailjs-com";
 import { motion, AnimatePresence } from "framer-motion";
 import cateringMenu from "../data/menuCatering";
+import { useNavigate } from "react-router-dom";
+import "../Styles/preorder.css";
 
-const { Option } = Select;
-const { TextArea } = Input;
-const { Step } = Steps;
-
-const OrderForm = () => {
+const Preorder = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [minDate, setMinDate] = useState(null);
   const [showCalendar, setShowCalendar] = useState(false);
+  const { Option } = Select;
+  const { TextArea } = Input;
+  const { Step } = Steps;
   const [form] = Form.useForm();
   const [currentStep, setCurrentStep] = useState(0);
+  const navigate = useNavigate();
   const [categories, setCategories] = useState([
     {
       key: Date.now(),
@@ -31,6 +33,7 @@ const OrderForm = () => {
       selectedCategory: "",
     },
   ]);
+  const [formData, setFormData] = useState({});
 
   useEffect(() => {
     const calculateCutoffDate = () => {
@@ -38,15 +41,11 @@ const OrderForm = () => {
       let cutoffDate = new Date(today);
       let day = cutoffDate.getDay();
 
-      // Adjust date to 48 working hours in advance, considering Sunday and Monday closures
       if (day === 0) {
-        // Sunday
         cutoffDate.setDate(cutoffDate.getDate() + 4); // Move to Thursday
       } else if (day === 6) {
-        // Saturday
         cutoffDate.setDate(cutoffDate.getDate() + 5); // Move to Thursday
       } else {
-        // Weekdays
         cutoffDate.setDate(cutoffDate.getDate() + 2);
         let newDay = cutoffDate.getDay();
         if (newDay === 0) {
@@ -67,7 +66,6 @@ const OrderForm = () => {
     for (let i = 0; i < 7; i++) {
       const day = moment(minDate).add(i, "days");
       if (day.day() !== 0 && day.day() !== 1) {
-        // Skip Sunday and Monday
         days.push(day);
       }
     }
@@ -196,6 +194,11 @@ const OrderForm = () => {
   const next = async () => {
     try {
       await form.validateFields();
+      const currentFormData = form.getFieldsValue();
+      setFormData((prev) => ({
+        ...prev,
+        ...currentFormData,
+      }));
       setCurrentStep(currentStep + 1);
     } catch (error) {
       console.log("Validation failed:", error);
@@ -206,21 +209,36 @@ const OrderForm = () => {
     setCurrentStep(currentStep - 1);
   };
 
-  const handleSubmit = (values) => {
+  const handleSubmit = () => {
+    const finalFormData = {
+      ...formData,
+      ...form.getFieldsValue(),
+    };
+
+    const structuredCategories = categories.map((category) => ({
+      category: category.selectedCategory,
+      items: category.items.map((item) => ({
+        name: item.value,
+        quantity: item.quantity,
+      })),
+    }));
+
     const templateParams = {
-      orderName: values.orderName,
-      phoneNumber: values.phoneNumber,
-      email: values.email,
-      pickupDate: moment(selectedDate).format("MMMM D, YYYY"),
-      pickupTime: values.pickupTime,
-      categories: categories.map((category) => ({
-        category: category.selectedCategory,
-        items: category.items
-          .map((item) => `${item.value} (x${item.quantity})`)
+      orderName: finalFormData.orderName,
+      phoneNumber: finalFormData.phoneNumber,
+      email: finalFormData.email,
+      pickupDate: selectedDate
+        ? moment(selectedDate).format("MMMM D, YYYY")
+        : undefined,
+      pickupTime: finalFormData.pickupTime,
+      tempType: finalFormData.tempType,
+      categories: structuredCategories.map((cat) => ({
+        category: cat.category,
+        items: cat.items
+          .map((item) => `${item.name} (x${item.quantity})`)
           .join(", "),
       })),
-      tempType: values.tempType,
-      comments: values.comments,
+      comments: finalFormData.comments,
     };
 
     emailjs
@@ -232,7 +250,6 @@ const OrderForm = () => {
       )
       .then(
         (response) => {
-          console.log("SUCCESS!", response.status, response.text);
           alert("Order submitted successfully!");
           form.resetFields(); // Clear the form data
           setCurrentStep(0); // Send user back to step 1
@@ -244,9 +261,10 @@ const OrderForm = () => {
               selectedCategory: "",
             },
           ]); // Reset categories
+          setFormData({}); // Clear form data in state
+          navigate("/");
         },
         (err) => {
-          console.log("FAILED...", err);
           alert("Failed to submit order.");
         }
       );
@@ -274,10 +292,10 @@ const OrderForm = () => {
     {
       title: "Basic",
       content: (
-        <div>
+        <div className="w-full">
           <Form.Item
             name="orderName"
-            label="Order Name"
+            label="Name"
             rules={[{ required: true, message: "Please enter an order name!" }]}
             className="mb-2"
           >
@@ -322,7 +340,7 @@ const OrderForm = () => {
     {
       title: "Pickup",
       content: (
-        <div>
+        <div className="w-full">
           <Form.Item
             name="pickupDate"
             label="Select Pickup Date"
@@ -363,8 +381,7 @@ const OrderForm = () => {
                   minDate={minDate}
                   tileDisabled={({ date }) => {
                     const day = date.getDay();
-                    // Disable Sundays and Mondays
-                    return day === 0 || day === 1;
+                    return day === 0 || day === 1; // Disable Sundays and Mondays
                   }}
                 />
               </div>
@@ -403,7 +420,7 @@ const OrderForm = () => {
     {
       title: "Menu",
       content: (
-        <div>
+        <div className="w-full">
           {categories.map((category, categoryIndex) => (
             <div key={category.key} className="mb-4 border p-4 rounded">
               <div className="flex justify-between items-center mb-2">
@@ -521,7 +538,12 @@ const OrderForm = () => {
               </Form.Item>
             </div>
           ))}
-          <Button type="dashed" onClick={addCategory} icon={<PlusOutlined />}>
+          <Button
+            className="container"
+            type="dashed"
+            onClick={addCategory}
+            icon={<PlusOutlined />}
+          >
             Add Another Category
           </Button>
         </div>
@@ -543,57 +565,109 @@ const OrderForm = () => {
               rows={4}
             />
           </Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            className=" bg-mGreen text-white"
-          >
-            Submit
-          </Button>
         </div>
       ),
     },
   ];
 
   return (
-    <div className="flex justify-center bg-mYellow h-full w-full">
-      <div className="p-2">
+    <div className="flex justify-center bg-mYellow h-full w-full p-2">
+      <div className="p-2 w-full bg-white shadow-md rounded-md">
         <motion.div
-          className="w-full h-full max-w-lg bg-white p-2 shadow-md rounded flex flex-col items-center justify-between overflow-auto"
+          className="w-full h-[90%] container mx-auto  rounded flex flex-col items-center justify-between overflow-auto py-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="w-full overflow-x-auto h-[25%]">
-            <Steps
-              current={currentStep}
-              className="w-full px-4"
-              direction="horizontal"
-            >
-              {steps.map((step, index) => (
-                <Step key={index} title={step.title} />
-              ))}
-            </Steps>
-          </div>
+          <header className="w-full flex overflow-x-auto custom-steps-header">
+            {steps.map((step, index) => (
+              <div
+                key={index}
+                className={`flex items-center justify-center gap-2 step-item ${currentStep === index ? "active" : ""}`}
+                onClick={() => setCurrentStep(index)}
+              >
+                <AnimatePresence mode="wait">
+                  {currentStep === index && (
+                    <motion.div
+                      key={`icon-${index}`}
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{
+                        scale: 1,
+                        opacity: 1,
+                      }}
+                      exit={{ scale: 0, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="bg-mGreen font-bold text-white aspect-square w-10 flex items-center justify-center rounded-full"
+                    >
+                      {index + 1}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                <AnimatePresence mode="wait">
+                  {currentStep === index && (
+                    <motion.div
+                      key={step.title}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{
+                        opacity: 1,
+                        y: 0,
+                        scale: 1,
+                      }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.3 }}
+                      className="font-bold text-lg"
+                    >
+                      {step.title}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ))}
+          </header>
 
           <Form
             form={form}
             onFinish={handleSubmit}
-            className="w-full h-[75%] flex flex-col items-center justify-start px-4"
+            className="w-full h-[75%] flex flex-col items-center justify-between px-2"
           >
             {steps[currentStep].content}
-            <div className="flex justify-center gap-4 mt-2 w-full">
+            <div className="flex justify-center gap-4 mt-8 w-full">
               {currentStep > 0 && (
                 <Button
                   type="default"
                   onClick={prev}
                   className="bg-red-500 text-white"
                 >
-                  Previous
+                  Back
                 </Button>
               )}
+
+              {currentStep === 3 && (
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className=" bg-mGreen text-white font-bold"
+                >
+                  Submit
+                </Button>
+              )}
+
+              {currentStep === 0 && (
+                <Button
+                  type="primary"
+                  onClick={() => navigate("/")}
+                  className=" bg-mRed text-white font-bold"
+                >
+                  Exit
+                </Button>
+              )}
+
               {currentStep < steps.length - 1 && (
-                <Button type="primary" className="bg-mGreen" onClick={next}>
+                <Button
+                  type="primary"
+                  className="bg-mGreen font-bold"
+                  onClick={next}
+                >
                   Next
                 </Button>
               )}
@@ -605,4 +679,4 @@ const OrderForm = () => {
   );
 };
 
-export default OrderForm;
+export default Preorder;
