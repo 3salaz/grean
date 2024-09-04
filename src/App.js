@@ -6,7 +6,6 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { MenuProvider } from "./context/MenuContext";
 import ErrorBoundary from './components/ErrorBoundry';
 import Preorder from "./components/Preorder";
-
 const HomePage = lazy(() => import("./pages/HomePage"));
 const AdminPage = lazy(() => import("./pages/AdminPage"));
 

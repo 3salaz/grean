@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { db, storage } from '../firebase.config';
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { toast } from 'react-toastify';
 
@@ -8,42 +8,11 @@ const MenuContext = createContext();
 
 export const MenuProvider = ({ children }) => {
   const [menu, setMenu] = useState([]);
+  const [cateringMenu, setCateringMenu] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const editMenuItem = async (id, editFormData) => {
-    setLoading(true);
-    setError(null);
-    try {
-        // Assume editFormData.newImages contains File objects needing upload
-        const newImageUrls = await Promise.all(
-            editFormData.newImages.map(async (file) => {
-                const imageRef = ref(storage, `images/${file.name}_${new Date().getTime()}`);
-                await uploadBytes(imageRef, file);
-                return getDownloadURL(imageRef);
-            })
-        );
-
-        const allImageUrls = [...editFormData.imageUrls, ...newImageUrls];
-        const updatedItem = { ...editFormData, imageUrls: allImageUrls };
-        delete updatedItem.newImages; // Prepare object for Firestore
-
-        // Here you'd call Firestore to update the item
-        await updateDoc(doc(db, "menu", id), updatedItem);
-
-        // Optionally update local state if you manage menu items locally
-        setMenu(prevMenu => prevMenu.map(item => item.id === id ? { ...item, ...updatedItem } : item));
-
-        toast.success('Item updated successfully!');
-    } catch (error) {
-        console.error('Error updating menu item:', error);
-        setError(error.message);
-        toast.error('Error updating menu item: ' + error.message);
-    } finally {
-        setLoading(false);
-    }
-};
-
+  // Fetch the regular menu
   const fetchMenu = async () => {
     setLoading(true);
     setError(null);
@@ -63,10 +32,78 @@ export const MenuProvider = ({ children }) => {
     }
   };
 
+  // Fetch the catering menu
+  const fetchCateringMenu = async () => {
+    setLoading(true);
+    setError(null);
+  
+    try {
+      const menuCategories = ['salads', 'appetizer', 'lasagnas', 'pasta', 'desserts'];
+      const cateringMenuData = {};
+  
+      // Loop through each category to fetch the corresponding items
+      for (const category of menuCategories) {
+        // Reference the document for each category
+        const categoryDocRef = doc(db, 'cateringMenu', category);
+        
+        // Fetch the document data
+        const categoryDocSnap = await getDoc(categoryDocRef);
+        
+        if (categoryDocSnap.exists()) {
+          // Store the 'items' array within the corresponding category in the cateringMenuData object
+          cateringMenuData[category] = categoryDocSnap.data().items || [];
+        } else {
+          console.error(`No such document for category: ${category}`);
+        }
+      }
+  
+      // console.log('Fetched Catering Menu Data:', cateringMenuData);
+      setCateringMenu(cateringMenuData);
+  
+    } catch (err) {
+      setError(err.message);
+      console.error("Error fetching catering menu:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    fetchMenu();
+    fetchCateringMenu(); // Fetch the catering menu when the component mounts
   }, []);
 
+  // Editing a regular menu item
+  const editMenuItem = async (id, editFormData) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const newImageUrls = await Promise.all(
+        editFormData.newImages.map(async (file) => {
+          const imageRef = ref(storage, `images/${file.name}_${new Date().getTime()}`);
+          await uploadBytes(imageRef, file);
+          return getDownloadURL(imageRef);
+        })
+      );
+
+      const allImageUrls = [...editFormData.imageUrls, ...newImageUrls];
+      const updatedItem = { ...editFormData, imageUrls: allImageUrls };
+      delete updatedItem.newImages; // Prepare object for Firestore
+
+      await updateDoc(doc(db, 'menu', id), updatedItem);
+
+      setMenu(prevMenu => prevMenu.map(item => item.id === id ? { ...item, ...updatedItem } : item));
+
+      toast.success('Item updated successfully!');
+    } catch (error) {
+      console.error('Error updating menu item:', error);
+      setError(error.message);
+      toast.error('Error updating menu item: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Adding a new regular menu item
   const addItem = async (item) => {
     setError(null);
     try {
@@ -77,8 +114,7 @@ export const MenuProvider = ({ children }) => {
       setError(err.message);
     }
   };
-
-
+  // Deleting a regular menu item
   const deleteItem = async (id) => {
     setError(null);
     try {
@@ -90,8 +126,23 @@ export const MenuProvider = ({ children }) => {
     }
   };
 
+  useEffect(() => {
+    fetchMenu();
+    fetchCateringMenu(); // Fetch catering menu as well
+  }, []);
+
   return (
-    <MenuContext.Provider value={{ menu, loading,setLoading, error, setError, addItem, editMenuItem, deleteItem }}>
+    <MenuContext.Provider value={{
+      menu,
+      cateringMenu, // Provide cateringMenu data
+      loading,
+      setLoading,
+      error,
+      setError,
+      addItem,
+      editMenuItem,
+      deleteItem
+    }}>
       {children}
     </MenuContext.Provider>
   );

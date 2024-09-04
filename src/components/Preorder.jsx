@@ -12,8 +12,8 @@ import moment from "moment";
 import "tailwindcss/tailwind.css";
 import emailjs from "emailjs-com";
 import { motion, AnimatePresence } from "framer-motion";
-import cateringMenu from "../data/menuCatering";
 import { useNavigate } from "react-router-dom";
+import { useMenu } from "../context/MenuContext"; // Import useMenu hook
 import "../Styles/preorder.css";
 
 const Preorder = () => {
@@ -34,6 +34,8 @@ const Preorder = () => {
     },
   ]);
   const [formData, setFormData] = useState({});
+
+  const { cateringMenu, loading, error } = useMenu(); // Access cateringMenu from context
 
   useEffect(() => {
     const calculateCutoffDate = () => {
@@ -118,6 +120,34 @@ const Preorder = () => {
     );
   };
 
+  const handleOrderItemChange = (categoryKey, itemKey, value) =>
+    setCategories(
+      categories.map((category) =>
+        category.key === categoryKey
+          ? {
+              ...category,
+              items: category.items.map((item) =>
+                item.key === itemKey ? { ...item, value } : item
+              ),
+            }
+          : category
+      )
+    );
+
+  const handleQuantityChange = (categoryKey, itemKey, quantity) =>
+    setCategories(
+      categories.map((category) =>
+        category.key === categoryKey
+          ? {
+              ...category,
+              items: category.items.map((item) =>
+                item.key === itemKey ? { ...item, quantity } : item
+              ),
+            }
+          : category
+      )
+    );
+
   const addCategory = () =>
     setCategories([
       ...categories,
@@ -158,34 +188,6 @@ const Preorder = () => {
           ? {
               ...category,
               items: category.items.filter((item) => item.key !== itemKey),
-            }
-          : category
-      )
-    );
-
-  const handleOrderItemChange = (categoryKey, itemKey, value) =>
-    setCategories(
-      categories.map((category) =>
-        category.key === categoryKey
-          ? {
-              ...category,
-              items: category.items.map((item) =>
-                item.key === itemKey ? { ...item, value } : item
-              ),
-            }
-          : category
-      )
-    );
-
-  const handleQuantityChange = (categoryKey, itemKey, quantity) =>
-    setCategories(
-      categories.map((category) =>
-        category.key === categoryKey
-          ? {
-              ...category,
-              items: category.items.map((item) =>
-                item.key === itemKey ? { ...item, quantity } : item
-              ),
             }
           : category
       )
@@ -243,7 +245,7 @@ const Preorder = () => {
 
     emailjs
       .send(
-        "service_marcellas",
+        "service_3salaz",
         "template_mi55j1p",
         templateParams,
         "OXVmMrXHHOEpr832j"
@@ -270,29 +272,87 @@ const Preorder = () => {
       );
   };
 
-  const renderSummary = () => (
-    <div className="p-2 border rounded-lg bg-gray-50 w-full">
-      <h3 className="text-lg font-bold mb-2">Order Summary</h3>
-      {categories.map((category, index) => (
-        <div key={index} className="mb-2">
-          <h4 className="font-semibold">{category.selectedCategory}</h4>
-          <ul>
-            {category.items.map((item, idx) => (
-              <li key={idx} className="ml-4 list-disc">
-                {item.value} (x{item.quantity})
-              </li>
-            ))}
-          </ul>
+  // Define renderSummary before it's used
+  const CALIFORNIA_SALES_TAX = 0.0725; // 7.25% sales tax
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+  
+  const renderSummary = () => {
+    const calculateItemTotal = (price, quantity) => {
+      return parseFloat(price) * quantity; // Convert price from string to number
+    };
+  
+    const calculateTotalWithTax = (total) => {
+      return total * (1 + CALIFORNIA_SALES_TAX);
+    };
+  
+    let grandTotal = 0;
+  
+    return (
+      <div className="p-2 border rounded-lg bg-gray-50 w-full h-full">
+        <h3 className="text-lg font-bold mb-2">Order Summary</h3>
+        {categories.map((category, index) => {
+          const categoryItems = cateringMenu[category.selectedCategory.toLowerCase()];
+  
+          if (!categoryItems) {
+            return (
+              <div key={index} className="mb-2">
+                <h4 className="font-semibold">{capitalizeFirstLetter(category.selectedCategory)}</h4>
+                <p>No items found for this category.</p>
+              </div>
+            );
+          }
+  
+          return (
+            <div key={index} className="mb-2">
+              <h4 className="font-semibold">{capitalizeFirstLetter(category.selectedCategory)}</h4>
+              <ul>
+                {category.items.map((item, idx) => {
+                  const menuItem = categoryItems.find(
+                    (menuItem) => menuItem.name === item.value
+                  );
+  
+                  if (!menuItem) {
+                    return (
+                      <li key={idx} className="ml-4 list-disc">
+                        {item.value} (x{item.quantity}) - Item not found
+                      </li>
+                    );
+                  }
+  
+                  const itemTotal = calculateItemTotal(menuItem.price, item.quantity);
+                  grandTotal += itemTotal;
+  
+                  return (
+                    <li key={idx} className="ml-4 list-disc">
+                      {item.value} (x{item.quantity}) - ${itemTotal.toFixed(2)}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          );
+        })}
+        <div className="mt-4">
+          <h4 className="font-bold">Subtotal: ${grandTotal.toFixed(2)}</h4>
+          <h4 className="font-bold">
+            Total with Tax: ${calculateTotalWithTax(grandTotal).toFixed(2)}
+          </h4>
         </div>
-      ))}
-    </div>
-  );
+      </div>
+    );
+  };
+  
+  
+  
+  
 
   const steps = [
     {
       title: "Basic",
       content: (
-        <div className="w-full">
+        <div className="w-full h-[90%] flex flex-col justify-center">
           <Form.Item
             name="orderName"
             label="Name"
@@ -320,7 +380,7 @@ const Preorder = () => {
               placeholder="Enter contact phone number"
               type="tel"
               className="w-full"
-              onChange={handlePhoneNumberChange}
+              onChange={handlePhoneNumberChange} // Ensure the formatting is applied
             />
           </Form.Item>
           <Form.Item
@@ -340,7 +400,7 @@ const Preorder = () => {
     {
       title: "Pickup",
       content: (
-        <div className="w-full">
+        <div className="w-full h-[90%] flex flex-col justify-center">
           <Form.Item
             name="pickupDate"
             label="Select Pickup Date"
@@ -420,8 +480,10 @@ const Preorder = () => {
     {
       title: "Menu",
       content: (
-        <div className="w-full">
-          {categories.map((category, categoryIndex) => (
+        <div className="w-full h-[90%] flex flex-col justify-center overflow-auto">
+          {loading && <p>Loading menu...</p>}
+          {error && <p>Error loading menu: {error}</p>}
+          {!loading && cateringMenu && Object.keys(cateringMenu).length > 0 && categories.map((category, categoryIndex) => (
             <div key={category.key} className="mb-4 border p-4 rounded">
               <div className="flex justify-between items-center mb-2">
                 <Form.Item
@@ -490,7 +552,7 @@ const Preorder = () => {
                         >
                           {cateringMenu[
                             category.selectedCategory.toLowerCase()
-                          ].map((menuItem) => (
+                          ]?.map((menuItem) => (
                             <Option key={menuItem.name} value={menuItem.name}>
                               {menuItem.name}
                             </Option>
@@ -527,6 +589,7 @@ const Preorder = () => {
               <Form.Item className="mb-4">
                 <Button
                   type="dashed"
+                  className="bg-mYellow"
                   onClick={() => addOrderItem(category.key)}
                   icon={<PlusOutlined />}
                   disabled={!category.items[category.items.length - 1].value} // Disable if the last item is not selected
@@ -539,7 +602,7 @@ const Preorder = () => {
             </div>
           ))}
           <Button
-            className="container"
+            className="container bg-mGreen text-white"
             type="dashed"
             onClick={addCategory}
             icon={<PlusOutlined />}
@@ -552,7 +615,7 @@ const Preorder = () => {
     {
       title: "Review",
       content: (
-        <div className="flex flex-col gap-2 items-center justify-center w-full">
+        <div className="w-full h-[90%] flex flex-col justify-center">
           {renderSummary()}
           <Form.Item
             name="comments"
@@ -574,12 +637,12 @@ const Preorder = () => {
     <div className="flex justify-center bg-mYellow h-full w-full p-2">
       <div className="p-2 w-full bg-white shadow-md rounded-md">
         <motion.div
-          className="w-full h-[90%] container mx-auto  rounded flex flex-col items-center justify-between overflow-auto py-4"
+          className="w-full h-full container mx-auto  rounded flex flex-col items-center justify-between overflow-auto"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <header className="w-full flex overflow-x-auto custom-steps-header">
+          <header className="w-full h-[10%] flex overflow-x-auto custom-steps-header">
             {steps.map((step, index) => (
               <div
                 key={index}
@@ -615,7 +678,7 @@ const Preorder = () => {
                       }}
                       exit={{ opacity: 0, y: -20 }}
                       transition={{ duration: 0.3 }}
-                      className="font-bold text-lg"
+                      className="font-bold text-2xl text-mRed"
                     >
                       {step.title}
                     </motion.div>
@@ -628,10 +691,10 @@ const Preorder = () => {
           <Form
             form={form}
             onFinish={handleSubmit}
-            className="w-full h-[75%] flex flex-col items-center justify-between px-2"
+            className="w-full h-[90%] flex flex-col items-center justify-between px-2"
           >
             {steps[currentStep].content}
-            <div className="flex justify-center gap-4 mt-8 w-full">
+            <div className="flex items-center justify-center gap-4 w-full h-[10%]">
               {currentStep > 0 && (
                 <Button
                   type="default"

@@ -108,6 +108,7 @@ function ActionBtnGrid() {
       <AnimatePresence>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <div className="flex flex-col gap-2 items-center justify-center">
+          
           <h1 className="text-3xl font-bold py-4">
             {menuType === "lunch" ? "Lunch" : "Catering"} Menu
           </h1>

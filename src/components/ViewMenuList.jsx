@@ -101,12 +101,15 @@ function ViewMenuList() {
     <div className="h-full relative snap-start container">
       <div className="h-full w-full relative flex  bg-mRed text-white p-2">
           <div className="h-full w-full flex flex-col gap-3">
+            
             <h1 className="text-xl font-bold uppercase">
               {currentCategory || "Menu Items"}
             </h1>
+
             <p className="text-sm">
               Currently {menu.length} items in the menu.
             </p>
+
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
@@ -114,6 +117,7 @@ function ViewMenuList() {
             >
               <ion-icon size="large" name="cog-outline"></ion-icon>
             </motion.button>
+
             <ul
               ref={containerRef}
               className="flex items-center justify-start gap-2 overflow-auto snap-x snap-mandatory hide-scroll overscroll-none w-full px-2 py-2"
@@ -264,6 +268,7 @@ function ViewMenuList() {
                 </li>
               ))}
             </ul>
+
             <div className="flex container mx-auto items-center justify-center gap-4 h-[10%] bg-mRed px-6">
               <motion.button
                 className="rounded-md bg-white text-mGreen px-3 py-2 basis-1/3"
@@ -298,6 +303,7 @@ function ViewMenuList() {
                 Pastas
               </motion.button>
             </div>
+
           </div>
       </div>
     </div>
