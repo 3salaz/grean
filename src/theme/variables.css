@@ -1,0 +1,21 @@
+:root {
+    /* Brand Colors */
+    --ion-color-primary: #006A32; /* mGreen */
+    --ion-color-primary-rgb: 0, 106, 50;
+  
+    --ion-color-secondary: #F00925; /* mRed */
+    --ion-color-secondary-rgb: 240, 9, 37;
+  
+    --ion-color-tertiary: #FCD12A; /* mYellow */
+    --ion-color-tertiary-rgb: 252, 209, 42;
+  
+    /* Optional: Override other Ionic variables to match your theme */
+    --ion-color-success: #006A32; /* Same as mGreen */
+    --ion-color-warning: #FCD12A; /* Same as mYellow */
+    --ion-color-danger: #F00925; /* Same as mRed */
+  
+    /* Background and Text Colors */
+    --ion-background-color: #ffffff; /* White background */
+    --ion-text-color: #F00925; /* Red text */
+  }
+  

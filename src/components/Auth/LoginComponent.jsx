@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useHistory} from "react-router-dom";
 import { useAuth } from '../../context/AuthContext';
 
 function LoginComponent() {
@@ -7,12 +7,12 @@ function LoginComponent() {
   const { login } = useAuth(); // Destructure login from useAuth
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  const history = useHistory();
 
   const handleLogin = async () => {
     try {
       await login(email, password);
-      navigate("/admin");
+      history("/admin");
     } catch (error) {
       console.error("Login error:", error);
       if (error.code === 'auth/user-not-found') {
