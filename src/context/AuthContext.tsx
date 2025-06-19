@@ -7,7 +7,8 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
-  signInWithPopup
+  signInWithPopup,
+  sendEmailVerification
 } from "firebase/auth";
 import {toast} from "react-toastify";
 
@@ -49,7 +50,7 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({
     switch (error.code) {
       case "auth/email-already-in-use":
         toast.error(
-          "That email is already in use. Please sign in or use a different email."
+          "Email is already in use! Please sign in or use a different email."
         );
         break;
       case "auth/weak-password":
@@ -67,14 +68,10 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({
   const signUp = async (email: string, password: string) => {
     const auth = getAuth();
     try {
-      const userCreds = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const userCreds = await createUserWithEmailAndPassword(auth, email, password);
       await createProfileIfMissing(userCreds.user);
       setUser(userCreds.user);
-      return userCreds.user;
+      return userCreds.user;  
     } catch (error: any) {
       console.error("Sign Up Error:", error);
       handleSignUpError(error);
